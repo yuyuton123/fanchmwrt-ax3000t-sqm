@@ -1,0 +1,56 @@
+name: PackageCheck
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/pkgcheck.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: fanchmwrt/fanchmwrt
+          path: openwrt
+          fetch-depth: 1
+
+      - name: feeds
+        working-directory: openwrt
+        run: |
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: collect
+        run: |
+          cd openwrt
+          ./scripts/feeds list -a 2>/dev/null | awk '{print $1}' | sort -u > /tmp/allpkgs.txt
+          {
+            echo "# FanchmWrt 包可用性检查"
+            echo ""
+            echo "总包数: $(wc -l < /tmp/allpkgs.txt)"
+            echo ""
+            echo "## 关心的包"
+            for p in luci-app-sqm sqm-scripts sqm-scripts-extra kmod-sched-cake kmod-ifb kmod-sched-core tc-full iproute2 luci-app-eqos eqos luci-app-qos qos-scripts qosify luci-app-qosify nlbwmon luci-app-nlbwmon luci-app-nft-qos nft-qos luci-app-wrtbwmon wrtbwmon trafficshaper ratelimit tcfilter netifyd luci-app-netifyd luci-app-sqm-scripts; do
+              if grep -qx "$p" /tmp/allpkgs.txt; then echo "- AVAIL  $p"; else echo "- MISS   $p"; fi
+            done
+            echo ""
+            echo "## 名字含 qos/limit/sqm/rate/bwmon 的包"
+            grep -iE 'qos|limit|sqm|ratelimit|bwmon|bandwidth|shaper' /tmp/allpkgs.txt | sed 's/^/- /'
+          } > ../pkglist.md
+          cat ../pkglist.md
+
+      - name: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pkglist.md
+          git commit -m "chore: package availability report" || true
+          git push
