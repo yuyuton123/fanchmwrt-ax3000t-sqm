@@ -1,0 +1,167 @@
+# FanchmWrt 包可用性检查
+
+总包数: 9463
+
+## 关心的包
+- AVAIL  luci-app-sqm
+- AVAIL  sqm-scripts
+- MISS   sqm-scripts-extra
+- MISS   kmod-sched-cake
+- MISS   kmod-ifb
+- MISS   kmod-sched-core
+- MISS   tc-full
+- MISS   iproute2
+- MISS   luci-app-eqos
+- MISS   eqos
+- AVAIL  luci-app-qos
+- MISS   qos-scripts
+- MISS   qosify
+- MISS   luci-app-qosify
+- AVAIL  nlbwmon
+- AVAIL  luci-app-nlbwmon
+- MISS   luci-app-nft-qos
+- MISS   nft-qos
+- MISS   luci-app-wrtbwmon
+- MISS   wrtbwmon
+- AVAIL  trafficshaper
+- AVAIL  ratelimit
+- MISS   tcfilter
+- AVAIL  netifyd
+- MISS   luci-app-netifyd
+- MISS   luci-app-sqm-scripts
+
+## 名字含 qos/limit/sqm/rate/bwmon 的包
+- asterisk-res-limit
+- bsbf-rate-limiting
+- collectd-mod-sqm
+- kamailio-mod-ims-qos
+- kamailio-mod-ims-qos-npn
+- kamailio-mod-pipelimit
+- kamailio-mod-qos
+- kamailio-mod-ratelimit
+- luci-app-nlbwmon
+- luci-app-qos
+- luci-app-sqm
+- luci-i18n-nlbwmon-ar
+- luci-i18n-nlbwmon-bg
+- luci-i18n-nlbwmon-bn
+- luci-i18n-nlbwmon-ca
+- luci-i18n-nlbwmon-cs
+- luci-i18n-nlbwmon-da
+- luci-i18n-nlbwmon-de
+- luci-i18n-nlbwmon-el
+- luci-i18n-nlbwmon-es
+- luci-i18n-nlbwmon-fi
+- luci-i18n-nlbwmon-fr
+- luci-i18n-nlbwmon-ga
+- luci-i18n-nlbwmon-he
+- luci-i18n-nlbwmon-hi
+- luci-i18n-nlbwmon-hu
+- luci-i18n-nlbwmon-it
+- luci-i18n-nlbwmon-ja
+- luci-i18n-nlbwmon-ko
+- luci-i18n-nlbwmon-lo
+- luci-i18n-nlbwmon-lt
+- luci-i18n-nlbwmon-mr
+- luci-i18n-nlbwmon-ms
+- luci-i18n-nlbwmon-nl
+- luci-i18n-nlbwmon-no
+- luci-i18n-nlbwmon-pl
+- luci-i18n-nlbwmon-pt
+- luci-i18n-nlbwmon-pt-br
+- luci-i18n-nlbwmon-ro
+- luci-i18n-nlbwmon-ru
+- luci-i18n-nlbwmon-sk
+- luci-i18n-nlbwmon-sv
+- luci-i18n-nlbwmon-ta
+- luci-i18n-nlbwmon-tr
+- luci-i18n-nlbwmon-uk
+- luci-i18n-nlbwmon-vi
+- luci-i18n-nlbwmon-yua
+- luci-i18n-nlbwmon-zh-cn
+- luci-i18n-nlbwmon-zh-tw
+- luci-i18n-qos-ar
+- luci-i18n-qos-bg
+- luci-i18n-qos-bn
+- luci-i18n-qos-ca
+- luci-i18n-qos-cs
+- luci-i18n-qos-da
+- luci-i18n-qos-de
+- luci-i18n-qos-el
+- luci-i18n-qos-es
+- luci-i18n-qos-fa
+- luci-i18n-qos-fi
+- luci-i18n-qos-fr
+- luci-i18n-qos-ga
+- luci-i18n-qos-he
+- luci-i18n-qos-hi
+- luci-i18n-qos-hu
+- luci-i18n-qos-it
+- luci-i18n-qos-ja
+- luci-i18n-qos-ko
+- luci-i18n-qos-lo
+- luci-i18n-qos-lt
+- luci-i18n-qos-mr
+- luci-i18n-qos-ms
+- luci-i18n-qos-nl
+- luci-i18n-qos-no
+- luci-i18n-qos-pl
+- luci-i18n-qos-pt
+- luci-i18n-qos-pt-br
+- luci-i18n-qos-ro
+- luci-i18n-qos-ru
+- luci-i18n-qos-sk
+- luci-i18n-qos-sv
+- luci-i18n-qos-ta
+- luci-i18n-qos-tr
+- luci-i18n-qos-uk
+- luci-i18n-qos-vi
+- luci-i18n-qos-yua
+- luci-i18n-qos-zh-cn
+- luci-i18n-qos-zh-tw
+- luci-i18n-sqm-ar
+- luci-i18n-sqm-bg
+- luci-i18n-sqm-bn
+- luci-i18n-sqm-ca
+- luci-i18n-sqm-cs
+- luci-i18n-sqm-da
+- luci-i18n-sqm-de
+- luci-i18n-sqm-el
+- luci-i18n-sqm-es
+- luci-i18n-sqm-fi
+- luci-i18n-sqm-fr
+- luci-i18n-sqm-ga
+- luci-i18n-sqm-he
+- luci-i18n-sqm-hi
+- luci-i18n-sqm-hu
+- luci-i18n-sqm-it
+- luci-i18n-sqm-ja
+- luci-i18n-sqm-ko
+- luci-i18n-sqm-lo
+- luci-i18n-sqm-lt
+- luci-i18n-sqm-mr
+- luci-i18n-sqm-ms
+- luci-i18n-sqm-nl
+- luci-i18n-sqm-no
+- luci-i18n-sqm-pl
+- luci-i18n-sqm-pt
+- luci-i18n-sqm-pt-br
+- luci-i18n-sqm-ro
+- luci-i18n-sqm-ru
+- luci-i18n-sqm-sk
+- luci-i18n-sqm-sv
+- luci-i18n-sqm-ta
+- luci-i18n-sqm-tr
+- luci-i18n-sqm-uk
+- luci-i18n-sqm-vi
+- luci-i18n-sqm-zh-cn
+- luci-i18n-sqm-zh-tw
+- nlbwmon
+- open-plc-utils-coqos_add
+- open-plc-utils-coqos_info
+- open-plc-utils-coqos_man
+- open-plc-utils-coqos_mod
+- open-plc-utils-coqos_rel
+- ratelimit
+- sqm-scripts
+- trafficshaper
