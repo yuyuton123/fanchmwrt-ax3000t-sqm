@@ -58,14 +58,24 @@ jobs:
             echo "CONFIG_PACKAGE_luci-app-sqm=y"
             echo "CONFIG_PACKAGE_tc-full=y"
             echo "CONFIG_PACKAGE_iproute2=y"
+            echo "CONFIG_PACKAGE_luci-app-eqos=y"
+            echo "CONFIG_PACKAGE_luci-app-qos=y"
+            echo "CONFIG_PACKAGE_qos-scripts=y"
+            echo "CONFIG_PACKAGE_qosify=y"
+            echo "CONFIG_PACKAGE_luci-app-qosify=y"
+            echo "CONFIG_PACKAGE_nlbwmon=y"
+            echo "CONFIG_PACKAGE_luci-app-nlbwmon=y"
+            echo "CONFIG_PACKAGE_curl=y"
           } > .config
           make defconfig > defconfig.log 2>&1 || true
-          echo "==== defconfig 输出末 40 行 ===="
-          tail -n 40 defconfig.log || true
+          echo "==== defconfig 输出末 50 行 ===="
+          tail -n 50 defconfig.log || true
           echo "==== target ===="
           grep -E '^CONFIG_TARGET_mediatek' .config || true
-          echo "==== qos ===="
-          grep -E '^CONFIG_PACKAGE_(sqm-scripts|sqm-scripts-extra|luci-app-sqm|kmod-sched-cake|kmod-sched-core|kmod-ifb|tc-full|iproute2)' .config || true
+          echo "==== 限速/统计包检查 ===="
+          for p in kmod-sched-cake kmod-ifb tc-full iproute2 luci-app-sqm luci-app-eqos luci-app-qos qos-scripts qosify luci-app-qosify nlbwmon luci-app-nlbwmon curl; do
+            if grep -q "^CONFIG_PACKAGE_${p}=y" .config; then echo "OK   $p"; else echo "MISS $p"; fi
+          done
           if ! grep -q '^CONFIG_TARGET_mediatek_filogic_DEVICE_xiaomi_mi-router-ax3000t=y' .config; then
             echo 'ERROR: device profile not selected'; exit 1
           fi
@@ -94,11 +104,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ls -lh openwrt/bin/targets/mediatek/filogic/ || true
-          TAG="build-$(date +%Y%m%d-%H%M%S)"
+          TAG="qos-$(date +%Y%m%d-%H%M%S)"
           gh release create "$TAG" \
             --repo "${{ github.repository }}" \
-            --title "FanchmWrt AX3000T + SQM ($TAG)" \
-            --notes "FanchmWrt self-build for Xiaomi AX3000T (stock layout, xiaomi_mi-router-ax3000t) with luci-app-sqm / CAKE / IFB." \
+            --title "FanchmWrt AX3000T + QoS suite ($TAG)" \
+            --notes "FanchmWrt self-build for Xiaomi AX3000T (stock layout) with SQM/CAKE, eqos, qos-scripts, qosify, nlbwmon." \
             openwrt/bin/targets/mediatek/filogic/*sysupgrade*.bin
 
       - name: upload-log-on-failure
