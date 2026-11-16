@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
+    paths:
+      - '.github/workflows/build.yml'
 
 permissions:
   contents: write
@@ -13,6 +15,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 350
     steps:
+      - name: checkout-self
+        uses: actions/checkout@v4
+
       - name: free-disk
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
@@ -50,15 +55,11 @@ jobs:
             echo "CONFIG_TARGET_mediatek_filogic=y"
             echo "CONFIG_TARGET_mediatek_filogic_DEVICE_xiaomi_mi-router-ax3000t=y"
             echo ""
-            echo "### FanchmWrt 私有套件"
+            echo "### FanchmWrt 私有套件（行为管理 / 应用中心 / 主题）"
             echo "CONFIG_PACKAGE_kmod-fwx=y"
             echo "CONFIG_PACKAGE_fwxd=y"
             echo "CONFIG_PACKAGE_libfwx_common=y"
             echo "CONFIG_PACKAGE_luci-theme-fanchmwrt=y"
-            echo "CONFIG_PACKAGE_kmod-shortcut-fe=y"
-            echo "CONFIG_PACKAGE_kmod-nft-fullcone=y"
-            echo "CONFIG_PACKAGE_iptables-mod-fullconenat=y"
-            echo "CONFIG_PACKAGE_kmod-ipt-fullconenat=y"
             echo ""
             echo "### SQM / CAKE"
             echo "CONFIG_PACKAGE_kmod-sched-core=y"
@@ -71,7 +72,6 @@ jobs:
             echo "### 单设备 / 分级 QoS"
             echo "CONFIG_PACKAGE_qos-scripts=y"
             echo "CONFIG_PACKAGE_luci-app-qos=y"
-            echo "CONFIG_PACKAGE_qosify=y"
             echo "CONFIG_PACKAGE_tc-full=y"
             echo "CONFIG_PACKAGE_iproute2=y"
             echo ""
@@ -85,7 +85,7 @@ jobs:
           } > .config
           make defconfig > defconfig.log 2>&1 || true
           echo "==== 配置检查 ===="
-          for p in kmod-fwx fwxd libfwx_common luci-theme-fanchmwrt kmod-shortcut-fe kmod-nft-fullcone kmod-sched-cake kmod-ifb tc-full iproute2 sqm-scripts luci-app-sqm qos-scripts luci-app-qos qosify nlbwmon luci-app-nlbwmon curl; do
+          for p in kmod-fwx fwxd libfwx_common luci-theme-fanchmwrt kmod-sched-cake kmod-ifb tc-full iproute2 sqm-scripts luci-app-sqm qos-scripts luci-app-qos nlbwmon luci-app-nlbwmon curl; do
             if grep -q "^CONFIG_PACKAGE_${p}=y" .config; then echo "OK   $p"; else echo "MISS $p"; fi
           done
           echo "==== target 符号 ===="
@@ -118,16 +118,15 @@ jobs:
           gh release create "$TAG" \
             --repo "${{ github.repository }}" \
             --title "FanchmWrt AX3000T 完整版 + 限速 ($TAG)" \
-            --notes "保留 FanchmWrt 私有套件(fwx 行为管理/应用中心/主题) + SQM/CAKE + qos-scripts(单设备限速) + nlbwmon。" \
+            --notes "保留 FanchmWrt 私有套件(kmod-fwx/fwxd/主题) + SQM/CAKE + qos-scripts(单设备限速) + nlbwmon。" \
             openwrt/bin/targets/mediatek/filogic/*sysupgrade*.bin
 
-      - name: upload-log-on-failure
+      - name: dump-fail-log
         if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: |
-            openwrt/build.log
-            openwrt/defconfig.log
-            openwrt/.config
-          if-no-files-found: warn
+        run: |
+          { echo '# build failure log'; echo ''; echo '## build.log tail (250)'; tail -n 250 openwrt/build.log 2>/dev/null || echo '(no build.log)'; echo ''; echo '## defconfig.log tail'; tail -n 40 openwrt/defconfig.log 2>/dev/null || echo '(none)'; echo ''; echo '## .config package lines'; grep -E '^CONFIG_PACKAGE_(kmod-fwx|fwxd|libfwx|luci-theme|qos|sqm|nlbw|tc-|iproute2)' openwrt/.config 2>/dev/null || echo '(none)'; } > build-fail.md
+          git config --local user.name "ci-bot"
+          git config --local user.email "ci@example.com"
+          git add build-fail.md
+          git commit -m "ci: dump failure log" || true
+          git push || true
